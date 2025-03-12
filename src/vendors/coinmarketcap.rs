@@ -22,8 +22,7 @@ impl ApiVendor for CoinMarketCapVendor {
         let client = Client::new();
         let url = format!(
             "https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest?symbol={}&convert={}",
-            ticker,
-            currency
+            ticker, currency
         );
         let response = client
             .get(&url)

@@ -1,5 +1,7 @@
+mod cache;
 mod coinmarketcap;
 
+pub use cache::CacheLayerVendor;
 pub use coinmarketcap::CoinMarketCapVendor;
 
 #[async_trait::async_trait]

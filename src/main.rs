@@ -1,9 +1,9 @@
-use poem::middleware::Cors;
 use poem::EndpointExt;
-use poem::{listener::TcpListener, Route, Server};
+use poem::middleware::Cors;
+use poem::{Route, Server, listener::TcpListener};
 use poem_openapi::param::Query;
 use poem_openapi::payload::PlainText;
-use poem_openapi::{param::Path, OpenApi, OpenApiService, Tags};
+use poem_openapi::{OpenApi, OpenApiService, Tags, param::Path};
 
 mod vendors;
 
@@ -41,7 +41,9 @@ impl Api {
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
     if std::env::var_os("RUST_LOG").is_none() {
-        std::env::set_var("RUST_LOG", "poem=debug");
+        unsafe {
+            std::env::set_var("RUST_LOG", "poem=debug");
+        }
     }
 
     let cmc_api_key = std::env::var("CMC_API_KEY")
@@ -51,7 +53,9 @@ async fn main() -> Result<(), std::io::Error> {
 
     let api_service = OpenApiService::new(
         Api {
-            vendor: Box::new(vendors::CoinMarketCapVendor::new(cmc_api_key)),
+            vendor: Box::new(vendors::CacheLayerVendor::new(Box::new(
+                vendors::CoinMarketCapVendor::new(cmc_api_key),
+            ))),
         },
         "Just Coin Price",
         "1.0",
