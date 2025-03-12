@@ -1,42 +1,10 @@
 use poem::EndpointExt;
 use poem::middleware::Cors;
 use poem::{Route, Server, listener::TcpListener};
-use poem_openapi::param::Query;
-use poem_openapi::payload::PlainText;
-use poem_openapi::{OpenApi, OpenApiService, Tags, param::Path};
+use poem_openapi::OpenApiService;
 
+mod api;
 mod vendors;
-
-#[derive(Tags)]
-enum ApiTags {
-    #[oai(rename = "Coin Prices")]
-    CoinPrices,
-}
-
-struct Api {
-    vendor: Box<dyn vendors::ApiVendor>,
-}
-
-#[OpenApi]
-impl Api {
-    #[oai(
-        path = "/coins/:ticker/price",
-        method = "get",
-        tag = "ApiTags::CoinPrices"
-    )]
-    async fn get_coin_price(
-        &self,
-        ticker: Path<String>,
-        currency: Query<Option<String>>,
-    ) -> PlainText<String> {
-        PlainText(
-            self.vendor
-                .get_price(ticker.0, currency.0.unwrap_or("USD".to_string()))
-                .await
-                .unwrap(),
-        )
-    }
-}
 
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
@@ -52,7 +20,7 @@ async fn main() -> Result<(), std::io::Error> {
     tracing_subscriber::fmt::init();
 
     let api_service = OpenApiService::new(
-        Api {
+        api::Api {
             vendor: Box::new(vendors::CacheLayerVendor::new(Box::new(
                 vendors::CoinMarketCapVendor::new(cmc_api_key),
             ))),
