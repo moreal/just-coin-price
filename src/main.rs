@@ -14,6 +14,15 @@ async fn main() -> Result<(), std::io::Error> {
         }
     }
 
+    let allowed_tickers: Vec<String> = std::env::var_os("ALLOWED_TICKERS")
+        .map(|s| s.into_string().unwrap_or_default())
+        .map(|s| s.split(',').map(|x| x.to_string()).collect())
+        .unwrap_or_default();
+    let allowed_currencies: Vec<String> = std::env::var_os("ALLOWED_CURRENCIES")
+        .map(|s| s.into_string().unwrap_or_default())
+        .map(|s| s.split(',').map(|x| x.to_string()).collect())
+        .unwrap_or_default();
+
     let cmc_api_key = std::env::var("CMC_API_KEY")
         .map_err(|e| std::io::Error::new(std::io::ErrorKind::NotFound, e))?;
 
@@ -24,6 +33,8 @@ async fn main() -> Result<(), std::io::Error> {
             vendor: Box::new(vendors::CacheLayerVendor::new(Box::new(
                 vendors::CoinMarketCapVendor::new(cmc_api_key),
             ))),
+            allowed_tickers,
+            allowed_currencies,
         },
         "Just Coin Price",
         "1.0",
