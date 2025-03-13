@@ -34,7 +34,12 @@ cargo test
 
 ## API Endpoints
 
-- `GET /coins/{ticker}/price` - Get the latest price for a specific cryptocurrency
+- `GET /coins/{ticker}/price?currency={currency}` - Get the latest price for a specific cryptocurrency for a specific currency.
+
+## Environment Variables
+
+- `ALLOWED_TICKERS`: A comma-separated list of tickers to allow. (e.g., `ALLOWED_TICKERS=WNCG`)
+- `ALLOWED_CURRENCIES`: A comma-separated list of currencies to allow. (e.g., `ALLOWED_CURRENCIES=KRW,USD`)
 
 ## License
 
