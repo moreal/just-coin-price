@@ -1,0 +1,26 @@
+# fly.toml app configuration file generated for just-coin-price on 2025-03-11T19:49:19+09:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'just-coin-price'
+primary_region = 'nrt'
+
+[build]
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  memory = '256mb'
+  cpu_kind = 'shared'
+  cpus = 1
+
+[env]
+  ALLOWED_TICKERS = 'WNCG'
+  ALLOWED_CURRENCIES = 'KRW,USD'
