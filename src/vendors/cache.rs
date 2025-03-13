@@ -39,7 +39,7 @@ impl ApiVendor for CacheLayerVendor {
             .await?;
         self.cache.write().await.insert(
             (ticker.clone(), currency.clone()),
-            (price.clone(), Utc::now() + chrono::Duration::minutes(10)),
+            (price.clone(), Utc::now() + chrono::Duration::minutes(20)),
         );
 
         Ok(price)
